@@ -10,7 +10,7 @@
 rosrun v4l_tis send
 ```
 
-** topic **
+**topic**
 ```bash
 /v4l_tis/image_raw
 /v4l_tis/mono_raw
