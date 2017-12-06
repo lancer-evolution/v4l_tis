@@ -6,6 +6,7 @@
 
 ## How to use
 
+直接デバイスを開いてrosで配信
 ```bash
 rosrun v4l_tis send
 ```
@@ -14,6 +15,11 @@ rosrun v4l_tis send
 ```bash
 /v4l_tis/image_raw
 /v4l_tis/mono_raw
+```
+
+udp通信で取得したものをrosで配信
+```bash
+rosrun v4l_tis udp_reciever
 ```
 
 ## How to custom
