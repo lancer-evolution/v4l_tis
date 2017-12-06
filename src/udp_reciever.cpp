@@ -42,10 +42,10 @@ class ImageConverter
 
 public:
   ImageConverter()
-	:nh_("~"),
-	it_(nh_)
+  //:nh_("udp_reciever"),
+	:it_(nh_)
   {
-	mono_pub_ = it_.advertise("/mono_raw", 1);
+	mono_pub_ = it_.advertise("/udp_reciever/image_raw", 1);
   }
 
   ~ImageConverter()
