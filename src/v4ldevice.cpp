@@ -462,14 +462,15 @@ void init_userp (unsigned int buffer_size)
     }
 }
 
-void init_device ( int width, int height, int exposure, int gain = 63)
+void init_device ( int width, int height, int exposure, int gain = 63, int fps = 60)
 {
     struct v4l2_capability cap;
     struct v4l2_cropcap cropcap;
     struct v4l2_crop crop;
     struct v4l2_format fmt;
-    struct v4l2_queryctrl qctl; //追加
-    struct v4l2_control control; //追加
+    struct v4l2_queryctrl qctl;		 // 追加
+    struct v4l2_control control;	 // 追加
+	struct v4l2_streamparm interval; // 追加
     unsigned int min;
 
     if (-1 == xioctl(fd, VIDIOC_QUERYCAP, &cap))
@@ -575,6 +576,16 @@ void init_device ( int width, int height, int exposure, int gain = 63)
             errno_exit("VIDIOC_G_FMT");
     }
 
+	// Set the capture interval of the camera
+	memset(&interval, 0, sizeof(interval));
+    interval.type                                  = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    interval.parm.capture.timeperframe.numerator   = 1;
+    interval.parm.capture.timeperframe.denominator = fps; // fps
+    if(-1 == xioctl(fd, VIDIOC_S_PARM, &interval))
+	  {
+		errno_exit("VIDIOC_S_PARM");
+	  }
+
     /* Buggy driver paranoia. */
     min = fmt.fmt.pix.width * 2;
     if (fmt.fmt.pix.bytesperline < min)
@@ -664,7 +675,7 @@ void init_device ( int width, int height, int exposure, int gain = 63)
 	
     //ここまで追加箇所
 	// 自前でGAINコントロール
-	memset(&control, 0, sizeof(control));
+	memset(&control, 0, sizeof(control)); // 0で埋めるだけ
 	control.id = V4L2_CID_GAIN;
 	
 	if (0 == xioctl(fd, VIDIOC_G_CTRL, &control)) {
@@ -682,6 +693,8 @@ void init_device ( int width, int height, int exposure, int gain = 63)
 	  perror("VIDIOC_G_CTRL");
 	  exit(EXIT_FAILURE);
 	}
+
+	
   
 }
 

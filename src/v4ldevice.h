@@ -1,7 +1,7 @@
 
  void open_device(const char* devicename); 
  void close_device(void);
-void init_device (int width, int height, int exposure, int gain = 63);
+void init_device (int width, int height, int exposure, int gain = 63, int fps = 60);
  void init_userp (unsigned int buffer_size);
  void init_mmap (void);
  void init_read (unsigned int buffer_size);

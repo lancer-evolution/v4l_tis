@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   cmake_modules
+  camera_info_manager
 )
 
 FIND_PACKAGE(OpenCV REQUIRED)

@@ -17,6 +17,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <time.h>
 // エラー処理関係
 #include <errno.h>
 #include <sys/ioctl.h>
@@ -56,7 +57,7 @@ public:
   void imagePb(cv::Mat &image)
   {
 	sensor_msgs::ImageConstPtr msg_mono =
-	  cv_bridge::CvImage(std_msgs::Header(), "mono8", image).toImageMsg();
+	  cv_bridge::CvImage(std_msgs::Header(), "rgb8", image).toImageMsg();
 	
     // Output modified video stream
 	mono_pub_.publish(msg_mono);
@@ -104,10 +105,22 @@ int main(int argc,char** argv) {
   }
 
   ImageConverter ic;
-  
-  while(ros::ok()){
-	numrcv = recv(sock, buff, receiveSize, 0);
+  int counter = 0;
 
+  while(ros::ok()){
+	clock_t start = clock();
+	numrcv = recv(sock, buff, receiveSize, 0);
+	
+	// counter++;
+	// numrcv = 0;
+	// while(numrcv < 1){
+	//   numrcv = recv(sock, buff, receiveSize, 0);
+	//   if (errno != EAGAIN) {
+	// 	cerr << "recv" << endl;
+	// 	break;
+	//   }
+	// }
+    
 	for(int i=0; i<sizeof(buff) ; i++){
 	  ibuff.push_back((uchar)buff[i]);
 	}
@@ -124,6 +137,12 @@ int main(int argc,char** argv) {
 	  break;
 	}
 	ros::spinOnce();
+
+	if(counter > 30){
+	  clock_t end = clock();
+	  cout <<1/( (double)(end - start) / CLOCKS_PER_SEC) << "Hz" << endl;
+	  counter = 0;
+	}
   }
 
   ibuff.clear();
