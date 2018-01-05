@@ -24,6 +24,12 @@ rosrun v4l_tis udp_reciever
 
 ## How to custom
 
+調整可能項目
+
+```cpp
+init_device(width, height, exposure, gain=63, fps=60)
+```
+
 本リポジトリは"DFM22BUC03-ML"用に開発しているが，その他のカメラでも使いたい場合は以下の項目を設定しなおし、ソースコードの改変が必要かもしれない．
 
 `send.cpp`内43，48行目辺りにある
@@ -34,4 +40,8 @@ src.create(480, 744, CV_8UC1);
 ```
 
 を任意のカメラサイズに変更する．
+
+
+
+
 また，カメラに露出設定がなければ`init_device`の第3引数は機能しないので，`v4ldevice.cpp`，`v4ldevice.h`のexposure設定を消したソースコードに変更が必要．
