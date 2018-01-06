@@ -31,6 +31,7 @@ public:
 
   std::string camera_info_url, camera_name;
   std::string link_name;
+  int width, height, exposure, gain, fps;
 
   //const char *device_name;
   unsigned char* ImageBuffer;
@@ -49,9 +50,15 @@ public:
     //cv::namedWindow(OPENCV_WINDOW);
 
 	
-	nh_.param("camera_info_url", camera_info_url, std::string("file:///home/kazuhiro/ROS/svo_ws/src/v4l_tis/ost.yaml"));
+	nh_.param("camera_info_url", camera_info_url, std::string(" "));
 	nh_.param("camera_name", camera_name, std::string("narrow_stereo"));
-	nh_.param("link_name", link_name, std::string("camera"));
+	nh_.param("link_name", link_name, std::string("ardrone_base_link"));
+	nh_.param("width", width, 744);
+	nh_.param("height", height, 480);
+	nh_.param("exposure", exposure, 40);
+	nh_.param("gain", gain, 63);
+	nh_.param("fps", fps, 30);
+	
 	//cinfo_.reset(new camera_info_manager::CameraInfoManager(nh_, "v4l_tis", camera_info_url));
 	//cinfo_.reset(new camera_info_manager::CameraInfoManager(nh_));
 	cinfo_->setCameraName(camera_name);
@@ -60,12 +67,12 @@ public:
 
     const char *device_name = "/dev/video0";
 	open_device(device_name); 
-	init_device(744, 480, 50, 63, 60); //width,height,exposure,gain,fps
+	init_device(width,height,exposure,gain,fps);
     start_capturing();
 
     //バッファーとMatクラスの準備
     ImageBuffer = NULL;
-    src.create(480, 744, CV_8UC1);
+    src.create(height, width, CV_8UC1);
   }
 
   ~ImageConverter()
