@@ -28,6 +28,7 @@ public:
   image_transport::Publisher mono_pub_;
   boost::shared_ptr<camera_info_manager::CameraInfoManager> cinfo_;
   image_transport::CameraPublisher info_pub_;
+  ros::Time time_stamp;
 
   std::string camera_info_url, camera_name;
   std::string link_name;
@@ -85,6 +86,7 @@ public:
 	ImageBuffer = snapFrame();
 
 	if (ImageBuffer != NULL) {
+	  time_stamp = ros::Time::now();
 	  memcpy(src.data, ImageBuffer, src.step * src.rows); //バッファーをMatクラスに受け渡す．
 	  
 	  cvtColor(src, dst, CV_BayerGB2RGB); //ここがBayer変換
@@ -103,7 +105,8 @@ public:
 	
 	ci_->header.frame_id = link_name;
 	msg->header.frame_id = link_name;
-	
+	ci_->header.stamp = time_stamp;
+	msg->header.stamp = time_stamp;
 	
     // Output modified video stream
     //color_pub_.publish(msg);
